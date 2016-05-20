@@ -56,6 +56,8 @@ import RadioButtonLabeled from './components/RadioButtonLabeled/RadioButtonLabel
 import ResizeIcon from './components/Icon/ResizeIcon/ResizeIcon';
 import ScrollTable from './components/ScrollTable/ScrollTable';
 import SearchIcon from './components/Icon/SearchIcon/SearchIcon';
+import SplitHorizontal from './components/SplitHorizontal/SplitHorizontal';
+import SplitVertical from './components/SplitVertical/SplitVertical';
 import StickySection from './components/StickySection/StickySection';
 import SuccessIcon from './components/Icon/SuccessIcon/SuccessIcon';
 import Switch from './components/Switch/Switch';
@@ -129,6 +131,8 @@ export {
 	SearchIcon,
 	SingleSelect,
 	SingleSelectDumb,
+	SplitHorizontal,
+	SplitVertical,
 	StickySection,
 	SuccessIcon,
 	Switch,
