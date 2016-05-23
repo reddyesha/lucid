@@ -35,7 +35,7 @@ export default React.createClass({
 						<Td><Checkbox/></Td>
 						<Td>Text</Td>
 						<Td><SuccessIcon/></Td>
-						<Td><Button size='small'>button</Button></Td>
+						<Td><div style={{display: 'flex', alignItems: 'center'}}><Button size='small'>button</Button> foobar</div></Td>
 						<Td>Sorted Column</Td>
 						<Td align='left'>align left</Td>
 						<Td align='center'>align center</Td>
