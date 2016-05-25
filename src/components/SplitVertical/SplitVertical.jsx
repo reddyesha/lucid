@@ -16,6 +16,7 @@ const {
 	object,
 	string,
 	oneOf,
+	oneOfType,
 } = React.PropTypes;
 
 /**
@@ -36,11 +37,59 @@ const SplitVertical = createClass({
 		 * any valid React children
 		 */
 		children: node,
+		/**
+		 * isExpanded
+		 */
+		isExpanded: bool,
 	},
 
 	components: {
-		Panel: createClass(),
-		Split: createClass(),
+		LeftPane: createClass({
+			displayName: 'SplitVertical.LeftPane',
+			propTypes: {
+				/**
+				 * any valid React children
+				 */
+				children: node,
+				/**
+				 * width
+				 */
+				width: oneOfType([number, string]),
+				/**
+				 * isPrimary
+				 */
+				isPrimary: bool,
+			},
+			getDefaultProps(){
+				return {
+					isPrimary: false,
+				};
+			},
+		}),
+
+		RightPane: createClass({
+			displayName: 'SplitVertical.RightPane',
+			propTypes: {
+				/**
+				 * any valid React children
+				 */
+				children: node,
+				/**
+				 * width
+				 */
+				width: oneOfType([number, string]),
+				/**
+				 * isPrimary
+				 */
+				isPrimary: bool,
+			},
+			getDefaultProps(){
+				return {
+					isPrimary: false,
+				};
+			},
+		}),
+		Divider: createClass(),
 	},
 
 	getDefaultProps() {
@@ -50,74 +99,68 @@ const SplitVertical = createClass({
 	},
 
 	handleDragStart() {
-		const { width: panel0Width } = this.refs.panel0.getBoundingClientRect();
-		const { width: panel1Width } = this.refs.panel1.getBoundingClientRect();
-		this.panel0StartWidth = panel0Width;
-		this.panel1StartWidth = panel1Width;
+		this.panes = this.getPanes();
+		const { secondaryRef } = this.panes;
+		this.secondaryStartRect = secondaryRef.getBoundingClientRect();
 	},
 
-	handleDrag({dX, dY}) {
-		this.refs.panel0.style.width =  this.panel0StartWidth + dX + 'px';
-		this.refs.panel1.style.width =  this.panel1StartWidth - dX + 'px';
+	handleDrag({ dX }) {
+		const { secondaryRef } = this.panes;
+		secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX}px`;
 	},
 
-	handleDragEnd({dX, dY}) {
-		this.refs.panel0.style.width =  this.panel0StartWidth + dX + 'px';
-		this.refs.panel1.style.width =  this.panel1StartWidth - dX + 'px';
-		this.panel0StartWidth = null;
-		this.panel1StartWidth = null;
+	handleDragEnd({ dX }) {
+		const { secondaryRef } = this.panes;
+		secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX}px`;
+	},
+	
+	getPanes() {
+		const { children } = this.props;
+		const {
+			leftPane: leftPaneRef,
+			rightPane: rightPaneRef,
+		} = this.refs;
+
+		const leftPaneElement = _.first(filterTypes(children, SplitVertical.LeftPane));
+		const rightPaneElement = _.first(filterTypes(children, SplitVertical.RightPane));
+		let primaryElement, primaryRef;
+		let secondaryElement, secondaryRef;
+
+		if (leftPaneElement.props.isPrimary && !rightPaneElement.props.isPrimary) {
+			primaryElement = leftPaneElement;
+			primaryRef = leftPaneRef;
+			secondaryElement = rightPaneElement;
+			secondaryRef = rightPaneRef;
+		} else {
+			primaryElement = rightPaneElement;
+			primaryRef = rightPaneRef;
+			secondaryElement = leftPaneElement;
+			secondaryRef = leftPaneRef;
+		}
+
+		return {
+			left: leftPaneElement.props,
+			right: rightPaneElement.props,
+			primary: primaryElement.props,
+			primaryRef,
+			secondary: secondaryElement.props,
+			secondaryRef,
+		};
 	},
 
 	componentWillReceiveProps(nextProps) {
-		const { children } = this.props;
+		const { primaryRef, secondaryRef } = this.getPanes();
 
-		if (this.props.isExpanded && !nextProps.isExpanded) {
-			// get target and other panel
-			const [panel0, panel1] = filterTypes(children, SplitVertical.Panel);
-			const targetPanelIndex = panel1.props.isTarget ? 1 : 0;
-			let targetPanelRef;
-			let otherPanelRef;
-			if (targetPanelIndex === 0) {
-				targetPanelRef = this.refs.panel0;
-				otherPanelRef = this.refs.panel1;
-			} else {
-				targetPanelRef = this.refs.panel1;
-				otherPanelRef = this.refs.panel0;
-			}
-
-			const { width: targetPanelWidth } = targetPanelRef.getBoundingClientRect();
-			const { width: otherPanelWidth } = otherPanelRef.getBoundingClientRect();
-			this.lastWidths = {
-				targetPanelWidth,
-				otherPanelWidth,
-			};
-
-			targetPanelRef.style.width = '0';
-			otherPanelRef.style.width = otherPanelWidth + targetPanelWidth + 'px';
-		} else if (!this.props.isExpanded && nextProps.isExpanded) {
-			// get target and other panel
-			const [panel0, panel1] = filterTypes(children, SplitVertical.Panel);
-			const targetPanelIndex = panel1.props.isTarget ? 1 : 0;
-			let targetPanelRef;
-			let otherPanelRef;
-			if (targetPanelIndex === 0) {
-				targetPanelRef = this.refs.panel0;
-				otherPanelRef = this.refs.panel1;
-			} else {
-				targetPanelRef = this.refs.panel1;
-				otherPanelRef = this.refs.panel0;
-			}
-
-			const lastWidth = this.lastWidths || {
-				targetPanelWidth: 200,
-				otherPanelWidth: 600,
-			};
-
-			targetPanelRef.style.width = lastWidth.targetPanelWidth + 'px';
-			//otherPanelRef.style.width = lastWidth.otherPanelWidth + 'px';
-			otherPanelRef.style.width	= '';
+		if (this.props.isExpanded && !nextProps.isExpanded) { // collapse secondary
+			const secondaryRect = secondaryRef.getBoundingClientRect();
+			this.refs.inner.style.transform = `translateX(-${secondaryRect.width}px)`;
+			primaryRef.style.marginRight = `${-secondaryRect.width}px`;
+		} else if (!this.props.isExpanded && nextProps.isExpanded) { // expand secondary
+			this.refs.inner.style.transform = 'translateX(0)';
+			primaryRef.style.marginRight = '0';
 		}
 	},
+
 	render() {
 		const {
 			children,
@@ -126,36 +169,47 @@ const SplitVertical = createClass({
 			...passThroughs
 		} = this.props;
 
-		const [panel0, panel1] = filterTypes(children, SplitVertical.Panel);
-		const split = _.first(filterTypes(children, SplitVertical.Split)) || (<SplitVertical.Split>&nbsp;</SplitVertical.Split>);
+		const {
+			left: leftPaneProps,
+			right: rightPaneProps,
+			secondary,
+		} = this.getPanes();
+
+		const dividerProps = _.get(_.first(filterTypes(children, SplitVertical.Divider)), 'props', {});
 
 		return (
 			<div {...passThroughs} className={cx('&', {
 				'&-is-expanded': isExpanded,
 			}, className)}>
-				<div
-					{...panel0.props}
-					className={cx('&-Panel', {
-						'&-Panel-has-set-width': panel0.props.hasSetWidth,
-						'&-Panel-is-target': panel0.props.isTarget,
-					}, panel0.props.className)}
-					ref='panel0'
-				/>
-				<DragCaptureZone
-					{...split.props}
-					className={cx('&-Split', split.props.className)}
-					onDragStart={this.handleDragStart}
-					onDrag={this.handleDrag}
-					onDragEnd={this.handleDragEnd}
-				>{split.props.children}</DragCaptureZone>
-				<div
-					{...panel1.props}
-					className={cx('&-Panel', {
-						'&-Panel-has-set-width': panel1.props.hasSetWidth,
-						'&-Panel-is-target': panel1.props.isTarget,
-					}, panel1.props.className)}
-					ref='panel1'
-				/>
+				<div {...passThroughs} className={cx('&-inner')} ref='inner'>
+					<div
+						{..._.omit(leftPaneProps, 'width')}
+						className={cx('&-LeftPane', {
+							'&-is-secondary': leftPaneProps === secondary,
+						}, leftPaneProps.className)}
+						style={_.assign({}, {
+							flexBasis: _.isNil(leftPaneProps.width) ? (leftPaneProps === secondary ? '49.825%' : null) : leftPaneProps.width
+						}, leftPaneProps.style)}
+						ref='leftPane'
+					/>
+					<DragCaptureZone
+						{...dividerProps}
+						className={cx('&-Divider', dividerProps.className)}
+						onDragStart={this.handleDragStart}
+						onDrag={this.handleDrag}
+						onDragEnd={this.handleDragEnd}
+					>{dividerProps.children || ' '}</DragCaptureZone>
+					<div
+						{..._.omit(rightPaneProps, 'width')}
+						className={cx('&-RightPane', {
+							'&-is-secondary': rightPaneProps === secondary,
+						}, rightPaneProps.className)}
+						style={_.assign({}, {
+							flexBasis: _.isNil(rightPaneProps.width) ? (rightPaneProps === secondary ? '49.825%' : null) : rightPaneProps.width
+						}, rightPaneProps.style)}
+						ref='rightPane'
+					/>
+				</div>
 			</div>
 		);
 	}

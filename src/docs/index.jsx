@@ -481,14 +481,14 @@ const App = React.createClass({
 					</Link>
 
 					<div className='App-sidebar-container'>
-						<Autocomplete
+					{/*<Autocomplete
 							className='App-sidebar-search'
 							placeholder='Component search'
 							suggestions={suggestions}
 							value={search}
 							onChange={this.handleSearchChange}
 							onSelect={this.handleSearchSelect}
-						/>
+						/>*/}
 					</div>
 
 					<nav>

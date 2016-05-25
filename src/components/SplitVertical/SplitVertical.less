@@ -1,31 +1,33 @@
 .lucid-SplitVertical {
-	display: flex;
-	outline: 1px solid #767b7f;
+	overflow: hidden;
 
-	& > .lucid-SplitVertical-Panel {
-		//background: #f80;
-		background: rgba(255, 136, 0, 0.5);
-		color: white;
+	& > &-inner {
+		display: flex;
 		transition: transform 500ms;
 
-		&-has-set-width {
-			flex: 1 0 auto;
+		& > .lucid-SplitVertical-LeftPane,& > .lucid-SplitVertical-RightPane {
+			background: rgba(255, 136, 0, 0.5);
+			color: white;
+			flex: 1;
+			transition: margin-right 250ms;
+
+			&.lucid-SplitVertical-is-secondary {
+				flex: 0;
+			}
+		}
+
+		& > .lucid-SplitVertical-Divider {
+			background: @color-primary;
+			width: 4px;
+			cursor: ew-resize;
 		}
 	}
 
-	//&:not(&-is-expanded) {
-	//	.lucid-SplitVertical-Panel-is-target {
-	//		transform: translateX(-100%);
-	//	}
-
-	//	&:not(.lucid-SplitVertical-Panel-is-target) {
-	//		width: 100% !important;
-	//	}
-	//}
-
-	& > .lucid-SplitVertical-Split {
-		background: @color-primary;
-		width: 4px;
-		cursor: ew-resize;
+	&-is-expanded {
+		& > .lucid-SplitVertical-inner {
+			& > .lucid-SplitVertical-LeftPane,& > .lucid-SplitVertical-RightPane {
+				transition: margin-right 250ms 250ms;
+			}
+		}
 	}
 }
