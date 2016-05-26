@@ -105,13 +105,23 @@ const SplitVertical = createClass({
 	},
 
 	handleDrag({ dX }) {
-		const { secondaryRef } = this.panes;
-		secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX}px`;
+		const {
+			secondaryRef,
+			secondary,
+			right,
+		} = this.panes;
+
+		secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX * (secondary === right ? -1 : 1)}px`;
 	},
 
 	handleDragEnd({ dX }) {
-		const { secondaryRef } = this.panes;
-		secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX}px`;
+		const {
+			secondaryRef,
+			secondary,
+			right,
+		} = this.panes;
+
+		secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX * (secondary === right ? -1 : 1)}px`;
 	},
 	
 	getPanes() {
@@ -149,15 +159,29 @@ const SplitVertical = createClass({
 	},
 
 	componentWillReceiveProps(nextProps) {
-		const { primaryRef, secondaryRef } = this.getPanes();
+		const {
+			primaryRef,
+			secondaryRef,
+			secondary,
+			right,
+		} = this.getPanes();
 
 		if (this.props.isExpanded && !nextProps.isExpanded) { // collapse secondary
 			const secondaryRect = secondaryRef.getBoundingClientRect();
-			this.refs.inner.style.transform = `translateX(-${secondaryRect.width}px)`;
-			primaryRef.style.marginRight = `${-secondaryRect.width}px`;
+			if (secondary === right) {
+				this.refs.inner.style.transform = `translateX(${secondaryRect.width}px)`;
+				primaryRef.style.marginLeft = `${-secondaryRect.width}px`;
+			} else{
+				this.refs.inner.style.transform = `translateX(-${secondaryRect.width}px)`;
+				primaryRef.style.marginRight = `${-secondaryRect.width}px`;
+			}
 		} else if (!this.props.isExpanded && nextProps.isExpanded) { // expand secondary
 			this.refs.inner.style.transform = 'translateX(0)';
-			primaryRef.style.marginRight = '0';
+			if (secondary === right) {
+				primaryRef.style.marginLeft = '0';
+			} else{
+				primaryRef.style.marginRight = '0';
+			}
 		}
 	},
 

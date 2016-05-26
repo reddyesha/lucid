@@ -9,7 +9,7 @@
 			background: rgba(255, 136, 0, 0.5);
 			color: white;
 			flex: 1;
-			transition: margin-right 250ms;
+			transition: margin-left 250ms, margin-right 250ms;
 
 			&.lucid-SplitVertical-is-secondary {
 				flex: 0;
@@ -26,7 +26,7 @@
 	&-is-expanded {
 		& > .lucid-SplitVertical-inner {
 			& > .lucid-SplitVertical-LeftPane,& > .lucid-SplitVertical-RightPane {
-				transition: margin-right 250ms 250ms;
+				transition: margin-left 250ms 250ms, margin-right 250ms 250ms;
 			}
 		}
 	}
