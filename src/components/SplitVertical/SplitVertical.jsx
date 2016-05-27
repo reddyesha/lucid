@@ -100,28 +100,86 @@ const SplitVertical = createClass({
 
 	handleDragStart() {
 		this.panes = this.getPanes();
-		const { secondaryRef } = this.panes;
+		const { secondaryRef, primaryRef } = this.panes;
 		this.secondaryStartRect = secondaryRef.getBoundingClientRect();
+		this.refs.inner.style.transition = 'all 0s';
+		secondaryRef.style.transition = 'all 0s';
+		primaryRef.style.transition = 'all 0s';
 	},
 
 	handleDrag({ dX }) {
 		const {
-			secondaryRef,
-			secondary,
-			right,
-		} = this.panes;
+			isExpanded,
+		} = this.props;
 
-		secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX * (secondary === right ? -1 : 1)}px`;
-	},
-
-	handleDragEnd({ dX }) {
 		const {
 			secondaryRef,
 			secondary,
 			right,
+			primaryRef,
 		} = this.panes;
 
-		secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX * (secondary === right ? -1 : 1)}px`;
+		if (isExpanded) {
+			secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX * (secondary === right ? -1 : 1)}px`;
+		} else {
+			const overlapWidth = (secondary === right ? this.secondaryStartRect.width + dX: this.secondaryStartRect.width - dX);
+			if (overlapWidth > 0) {
+				if (secondary === right) {
+					this.refs.inner.style.transform = `translateX(${overlapWidth}px)`;
+					primaryRef.style.marginLeft = `${-1 * (overlapWidth)}px`;
+				} else {
+					this.refs.inner.style.transform = `translateX(${-1 * (overlapWidth)}px)`;
+					primaryRef.style.marginRight = `${-1 * (overlapWidth)}px`;
+				}
+			} else {
+				this.refs.inner.style.transform = 'translateX(0)';
+				if (secondary === right) {
+					primaryRef.style.marginLeft = '0';
+				} else{
+					primaryRef.style.marginRight = '0';
+				}
+				secondaryRef.style.flexBasis = `${dX * (secondary === right ? -1 : 1)}px`;
+			}
+		}
+	},
+
+	handleDragEnd({ dX }) {
+		const {
+			isExpanded,
+		} = this.props;
+
+		const {
+			secondaryRef,
+			secondary,
+			right,
+			primaryRef,
+		} = this.panes;
+
+		if (isExpanded) {
+			secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX * (secondary === right ? -1 : 1)}px`;
+		} else {
+			const overlapWidth = (secondary === right ? this.secondaryStartRect.width + dX: this.secondaryStartRect.width - dX);
+			if (overlapWidth > 0) {
+				if (secondary === right) {
+					this.refs.inner.style.transform = `translateX(${overlapWidth}px)`;
+					primaryRef.style.marginLeft = `${-1 * (overlapWidth)}px`;
+				} else {
+					this.refs.inner.style.transform = `translateX(${-1 * (overlapWidth)}px)`;
+					primaryRef.style.marginRight = `${-1 * (overlapWidth)}px`;
+				}
+			} else {
+				this.refs.inner.style.transform = 'translateX(0)';
+				if (secondary === right) {
+					primaryRef.style.marginLeft = '0';
+				} else{
+					primaryRef.style.marginRight = '0';
+				}
+				secondaryRef.style.flexBasis = `${dX * (secondary === right ? -1 : 1)}px`;
+			}
+		}
+		this.refs.inner.style.transition = '';
+		secondaryRef.style.transition = '';
+		primaryRef.style.transition = '';
 	},
 	
 	getPanes() {
