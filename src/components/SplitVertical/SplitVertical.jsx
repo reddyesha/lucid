@@ -41,6 +41,10 @@ const SplitVertical = createClass({
 		 * isExpanded
 		 */
 		isExpanded: bool,
+		/**
+		 * onResize
+		 */
+		onResize: func,
 	},
 
 	components: {
@@ -95,6 +99,7 @@ const SplitVertical = createClass({
 	getDefaultProps() {
 		return {
 			isExpanded: true,
+			onResize: _.noop,
 		};
 	},
 
@@ -143,9 +148,10 @@ const SplitVertical = createClass({
 		}
 	},
 
-	handleDragEnd({ dX }) {
+	handleDragEnd({ dX }, { event }) {
 		const {
 			isExpanded,
+			onResize,
 		} = this.props;
 
 		const {
@@ -157,8 +163,9 @@ const SplitVertical = createClass({
 
 		if (isExpanded) {
 			secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX * (secondary === right ? -1 : 1)}px`;
+			onResize(this.secondaryStartRect.width + dX, { props: this.props, event });
 		} else {
-			const overlapWidth = (secondary === right ? this.secondaryStartRect.width + dX: this.secondaryStartRect.width - dX);
+			const overlapWidth = (secondary === right ? this.secondaryStartRect.width + dX : this.secondaryStartRect.width - dX);
 			if (overlapWidth > 0) {
 				if (secondary === right) {
 					this.refs.inner.style.transform = `translateX(${overlapWidth}px)`;
@@ -167,6 +174,7 @@ const SplitVertical = createClass({
 					this.refs.inner.style.transform = `translateX(${-1 * (overlapWidth)}px)`;
 					primaryRef.style.marginRight = `${-1 * (overlapWidth)}px`;
 				}
+				onResize(this.secondaryStartRect.width - overlapWidth, { props: this.props, event });
 			} else {
 				this.refs.inner.style.transform = 'translateX(0)';
 				if (secondary === right) {
@@ -175,6 +183,7 @@ const SplitVertical = createClass({
 					primaryRef.style.marginRight = '0';
 				}
 				secondaryRef.style.flexBasis = `${dX * (secondary === right ? -1 : 1)}px`;
+				onResize(dX, { props: this.props, event });
 			}
 		}
 		this.refs.inner.style.transition = '';

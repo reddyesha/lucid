@@ -8,15 +8,27 @@ export default React.createClass({
 		};
 	},
 
-	handleToggle() {
+	handleToggle(event) {
+		console.log(event);
+		debugger;
+		event.preventDefault();
+		event.stopPropagation();
 		const { isExpanded } = this.state;
 		this.setState({isExpanded: !isExpanded});
+	},
+
+	handleResize(width) {
+		const { isExpanded } = this.state;
+		if (!isExpanded) {
+			this.setState({isExpanded: true});
+		}
+		console.log(`resized to ${width}`);
 	},
 
 	render() {
 		const { isExpanded } = this.state;
 		return(
-			<SplitVertical isExpanded={isExpanded}>
+			<SplitVertical isExpanded={isExpanded} onResize={this.handleResize}>
 				<SplitVertical.LeftPane width={225}>
 					Cold-pressed aesthetic biodiesel twee, heirloom vice iPhone austin. Truffaut wolf offal roof party, neutra yr drinking vinegar bitters single-origin coffee austin mlkshk mixtape semiotics blog. Pickled squid asymmetrical locavore before they sold out whatever. Umami viral organic banjo. You probably haven't heard of them hammock dreamcatcher franzen. Whatever kitsch direct trade, vegan fingerstache shabby chic scenester viral twee art party. Small batch offal helvetica, fixie franzen echo park street art try-hard.
 				</SplitVertical.LeftPane>
