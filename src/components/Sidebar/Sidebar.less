@@ -1,0 +1,112 @@
+@Sidebar-size-icon: 20px;
+
+.lucid-Sidebar {
+
+	&&-is-expanded {
+
+		& > .lucid-SplitVertical-inner {
+			& > .lucid-SplitVertical-Divider.lucid-Sidebar-Divider {
+				background-color: @color-backgroundColor;
+				width: 6px;
+				border-left: 1px solid @color-borderColor;
+				border-right: 1px solid @color-borderColor;
+			}
+		}
+
+		.lucid-Sidebar-expander {
+			align-self: flex-start;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-shrink: 0;
+			height: @Sidebar-size-icon;
+			width: @Sidebar-size-icon;
+			margin: 6px;
+
+			.gradient-animation(@featured-color-default-gradientStartColor, @featured-color-default-gradientEndColor);
+			.box-sizing();
+			border: solid 1px @featured-color-default-borderColor;
+			border-radius: @size-borderRadius;
+			outline: none;
+			transform: translateX(-33px);
+			position: absolute;
+
+			.lucid-ChevronIcon {
+				stroke: @color-darkGray;
+			}
+		}
+
+		.lucid-Sidebar-gripper {
+			opacity: 1;
+		}
+	}
+
+	& > .lucid-SplitVertical-inner {
+		& > .lucid-SplitVertical-Divider.lucid-Sidebar-Divider {
+			display: flex;
+			flex-direction: column;
+			background-color: @color-backgroundColor;
+			width: 33px;
+			border-right: 1px solid @color-borderColor;
+		}
+	}
+
+	.lucid-Sidebar-expander {
+		align-self: flex-start;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-shrink: 0;
+		height: @Sidebar-size-icon;
+		width: @Sidebar-size-icon;
+		margin: 6px;
+
+		.gradient-animation(@featured-color-default-gradientStartColor, @featured-color-default-gradientEndColor);
+		.box-sizing();
+		border: solid 1px @featured-color-default-borderColor;
+		border-radius: @size-borderRadius;
+		outline: none;
+		cursor: pointer;
+		position: absolute;
+
+		.lucid-ChevronIcon {
+			stroke: @color-darkGray;
+		}
+	}
+
+	.lucid-Sidebar-gripper {
+		margin: auto;
+		opacity: 0;
+		transition: opacity 500ms;
+	}
+
+	&&-is-animated {
+
+		& > .lucid-SplitVertical-inner {
+			& > .lucid-SplitVertical-Divider.lucid-Sidebar-Divider {
+				transition: width 500ms;
+			}
+		}
+
+		.lucid-Sidebar-expander {
+			transition: transform 500ms;
+		}
+	}
+
+	&-Bar-title {
+		background-color: @color-backgroundColor;
+		border-bottom: 1px solid @color-borderColor;
+		color: @color-textColor;
+		font: @size-L @fontFamily;
+		font-weight: bold;
+		padding: @size-XS @size-standard;
+	}
+
+	&-Bar-content {
+		padding: @size-XS;
+	}
+
+	&-Primary {
+		padding: @size-XS;
+	}
+}

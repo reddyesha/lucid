@@ -7,6 +7,7 @@ import { default as DropMenuDumb } from './components/DropMenu/DropMenu';
 import { default as ExpanderDumb } from './components/Expander/Expander';
 import { default as PaginatorDumb } from './components/Paginator/Paginator';
 import { default as RadioGroupDumb } from './components/RadioGroup/RadioGroup';
+import { default as SidebarDumb } from './components/Sidebar/Sidebar';
 import { default as SingleSelectDumb } from './components/SingleSelect/SingleSelect';
 import { default as TabsDumb } from './components/Tabs/Tabs';
 import { default as ToolTipDumb } from './components/ToolTip/ToolTip';
@@ -18,6 +19,7 @@ const DropMenu = buildHybridComponent(DropMenuDumb);
 const Expander = buildHybridComponent(ExpanderDumb);
 const Paginator = buildHybridComponent(PaginatorDumb);
 const RadioGroup = buildHybridComponent(RadioGroupDumb);
+const Sidebar = buildHybridComponent(SidebarDumb);
 const SingleSelect = buildHybridComponent(SingleSelectDumb);
 const Tabs = buildHybridComponent(TabsDumb);
 const ToolTip = buildHybridComponent(ToolTipDumb);
@@ -131,6 +133,8 @@ export {
 	SearchIcon,
 	SingleSelect,
 	SingleSelectDumb,
+	Sidebar,
+	SidebarDumb,
 	SplitHorizontal,
 	SplitVertical,
 	StickySection,

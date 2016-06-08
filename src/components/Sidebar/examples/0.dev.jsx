@@ -1,46 +1,31 @@
 import React from 'react';
-import { SplitVertical, ChevronIcon } from '../../../index';
+import { Sidebar } from '../../../index';
 
 export default React.createClass({
-	getInitialState() {
-		return {
-			isExpanded: true,
-			currentWidth: 225,
-			isAnimated: true,
-		};
+
+	handleExpand() {
+		console.log(`handleExpand`);
 	},
 
-	handleToggle(event) {
-		event.stopPropagation();
-		this.setState({isExpanded: !this.state.isExpanded});
+	handleCollapse() {
+		console.log(`handleCollapse`);
 	},
 
 	handleResize(width) {
-		const { isExpanded } = this.state;
-		if (!isExpanded) {
-			this.setState({isExpanded: true});
-		}
-		this.setState({currentWidth: width, isAnimated: false});
-		setTimeout(() => {
-			this.setState({currentWidth: width, isAnimated: true});
-		}, 1);
+		console.log(`handleResize width: ${width}`);
 	},
 
 	render() {
-		const { isExpanded, currentWidth, isAnimated } = this.state;
 		return(
-			<SplitVertical isAnimated={isAnimated} isExpanded={isExpanded} onResize={this.handleResize}>
-				<SplitVertical.LeftPane width={currentWidth} style={{overflow: 'hidden'}}>
+			<Sidebar isAnimated onResize={this.handleResize} onExpand={this.handleExpand} onCollapse={this.handleCollapse} style={{outline: '1px solid #c5c5c5'}}>
+				<Sidebar.Bar style={{overflow: 'hidden'}}>
 					Cold-pressed aesthetic biodiesel twee, heirloom vice iPhone austin. Truffaut wolf offal roof party, neutra yr drinking vinegar bitters single-origin coffee austin mlkshk mixtape semiotics blog. Pickled squid asymmetrical locavore before they sold out whatever. Umami viral organic banjo. You probably haven't heard of them hammock dreamcatcher franzen. Whatever kitsch direct trade, vegan fingerstache shabby chic scenester viral twee art party. Small batch offal helvetica, fixie franzen echo park street art try-hard.
-				</SplitVertical.LeftPane>
-				<SplitVertical.Divider style={{width: 16}}>
-					<ChevronIcon direction={isExpanded ? 'left' : 'right'} isBadge onMouseDown={this.handleToggle} style={{ cursor: 'pointer' }} />
-				</SplitVertical.Divider>
-				<SplitVertical.RightPane isPrimary>
+				</Sidebar.Bar>
+				<Sidebar.Primary>
 					Chartreuse keffiyeh meggings church-key, gochujang 90's messenger bag. Chillwave poutine cronut whatever occupy, squid vice organic. Tilde kinfolk whatever VHS. Swag gentrify put a bird on it, pour-over jean shorts knausgaard cray twee single-origin coffee lo-fi church-key cronut. Pabst tousled selfies try-hard. Sartorial cred ethical, food truck leggings next level sustainable flexitarian chillwave knausgaard pitchfork. Direct trade poutine photo booth mustache, cliche semiotics skateboard 90's.
 					Meggings actually distillery small batch pickled quinoa. Migas williamsburg polaroid trust fund. Slow-carb truffaut chia, single-origin coffee meggings cornhole four loko chambray put a bird on it art party semiotics. Food truck mumblecore VHS photo booth, brunch direct trade flexitarian before they sold out truffaut squid cred everyday carry salvia neutra. Lo-fi chartreuse semiotics, paleo butcher knausgaard direct trade gentrify post-ironic. XOXO craft beer affogato YOLO, raw denim umami irony pabst echo park humblebrag ugh plaid. Master cleanse tilde tattooed, bushwick seitan selfies four dollar toast hashtag trust fund sartorial cliche.
-				</SplitVertical.RightPane>
-			</SplitVertical>
+				</Sidebar.Primary>
+			</Sidebar>
 		);
 	}
 });

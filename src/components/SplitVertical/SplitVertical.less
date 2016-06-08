@@ -3,13 +3,11 @@
 
 	& > &-inner {
 		display: flex;
-		transition: transform 500ms;
 
 		& > .lucid-SplitVertical-LeftPane,& > .lucid-SplitVertical-RightPane {
-			background: rgba(255, 136, 0, 0.5);
-			color: white;
+			//background: rgba(255, 136, 0, 0.5);
+			//color: white;
 			flex: 1;
-			transition: margin-left 250ms, margin-right 250ms;
 
 			&.lucid-SplitVertical-is-secondary {
 				flex: 0;
@@ -23,11 +21,22 @@
 		}
 	}
 
-	&-is-expanded {
+	&&-is-animated {
+		& > .lucid-SplitVertical-inner {
+			transition: transform 500ms;
+
+			& > .lucid-SplitVertical-LeftPane,& > .lucid-SplitVertical-RightPane {
+				transition: margin-left 250ms, margin-right 250ms;
+			}
+		}
+	}
+
+	&&-is-animated&-is-expanded {
 		& > .lucid-SplitVertical-inner {
 			& > .lucid-SplitVertical-LeftPane,& > .lucid-SplitVertical-RightPane {
 				transition: margin-left 250ms 250ms, margin-right 250ms 250ms;
 			}
 		}
 	}
+
 }

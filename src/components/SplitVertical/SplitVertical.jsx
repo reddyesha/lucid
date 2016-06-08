@@ -42,6 +42,10 @@ const SplitVertical = createClass({
 		 */
 		isExpanded: bool,
 		/**
+		 * isAnimated
+		 */
+		isAnimated: bool,
+		/**
 		 * onResize
 		 */
 		onResize: func,
@@ -163,9 +167,10 @@ const SplitVertical = createClass({
 
 		if (isExpanded) {
 			secondaryRef.style.flexBasis = `${this.secondaryStartRect.width + dX * (secondary === right ? -1 : 1)}px`;
-			onResize(this.secondaryStartRect.width + dX, { props: this.props, event });
+			onResize(this.secondaryStartRect.width + dX * (secondary === right ? -1 : 1), { props: this.props, event });
 		} else {
 			const overlapWidth = (secondary === right ? this.secondaryStartRect.width + dX : this.secondaryStartRect.width - dX);
+			
 			if (overlapWidth > 0) {
 				if (secondary === right) {
 					this.refs.inner.style.transform = `translateX(${overlapWidth}px)`;
@@ -183,7 +188,7 @@ const SplitVertical = createClass({
 					primaryRef.style.marginRight = '0';
 				}
 				secondaryRef.style.flexBasis = `${dX * (secondary === right ? -1 : 1)}px`;
-				onResize(dX, { props: this.props, event });
+				onResize((dX) * (secondary === right ? -1 : 1), { props: this.props, event });
 			}
 		}
 		this.refs.inner.style.transition = '';
@@ -257,6 +262,7 @@ const SplitVertical = createClass({
 			children,
 			className,
 			isExpanded,
+			isAnimated,
 			...passThroughs
 		} = this.props;
 
@@ -271,8 +277,9 @@ const SplitVertical = createClass({
 		return (
 			<div {...passThroughs} className={cx('&', {
 				'&-is-expanded': isExpanded,
+				'&-is-animated': isAnimated,
 			}, className)}>
-				<div {...passThroughs} className={cx('&-inner')} ref='inner'>
+				<div className={cx('&-inner')} ref='inner'>
 					<div
 						{..._.omit(leftPaneProps, 'width')}
 						className={cx('&-LeftPane', {
